@@ -16,6 +16,7 @@ import org.opencv.core.MatOfByte;
 import org.opencv.videoio.Videoio;
 import org.opencv.videoio.VideoWriter;
 import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
 import org.opencv.core.Size;
 
 import java.io.ByteArrayInputStream;
@@ -190,7 +191,8 @@ public class Controller implements Initializable {
             if (deltaAngleFld.getText().isEmpty()) {
                 return;
             }
-            File theDir = new File("video/"+filename);
+//          File theDir = new File("video/"+filename);
+            File theDir = new File("video");
             if (!theDir.exists()) {
                 try{
                     theDir.mkdirs();
@@ -203,9 +205,9 @@ public class Controller implements Initializable {
             try{
 //            	outputVideo.open(filename, outputVideo.fourcc('M','P','4','V'), 20, new Size(frameW, frameH));
 //            	outputVideo.open(filename, outputVideo.fourcc('H','2','6','4'), 30, new Size(frameW, frameH));
- //         	outputVideo.open(filename, outputVideo.fourcc('A','V','C','1'), 20, new Size(frameW, frameH));
-          	//outputVideo.open(filename+".avi", outputVideo.fourcc('X','V','I','D'), 20, new Size(frameW, frameH), true);
-            	//outputVideo.open(filename, -1, 30, new Size(frameW, frameH));
+          	//outputVideo.open(filename, outputVideo.fourcc('A','V','C','1'), 20, new Size(frameW, frameH));
+          	outputVideo.open("video/"+filename+".avi", outputVideo.fourcc('X','V','I','D'), 20, new Size(frameW, frameH), true);
+            //outputVideo.open(filename+".avi", -1, 30, new Size(frameW, frameH));
             } catch (Exception e) {
                 e.printStackTrace();
                 // log the error
@@ -296,10 +298,12 @@ public class Controller implements Initializable {
                     imageToShow = mat2Image(frame);
                     if (takeShoot && isScanning) {
                     	if(outputVideo.isOpened()){
-                    		outputVideo.write(frame);
+                    		Mat resframe = new Mat();
+                    		Imgproc.resize(frame, resframe, new Size(frameW, frameH));
+                    		outputVideo.write(resframe);
                     	}
-                    	String jpgname =String.format("video/%s/%08d.jpg", filename,frameIdx++);
-                    	Imgcodecs.imwrite(jpgname, frame);
+                    	//String jpgname =String.format("video/%s/%08d.jpg", filename,frameIdx++);
+                    	//Imgcodecs.imwrite(jpgname, frame);
                     	/*
                         fullCoords = formulaSolver.getCoordinates(coords, angle);
                         if (fullCoords != null)
