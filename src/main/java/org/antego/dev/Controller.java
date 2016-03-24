@@ -14,7 +14,9 @@ import jssc.SerialPortList;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.videoio.Videoio;
+import org.opencv.videoio.VideoWriter;
 import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.core.Size;
 
 import java.io.ByteArrayInputStream;
 import java.net.URL;
@@ -22,6 +24,9 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.ResourceBundle;
 import java.util.concurrent.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.io.File;
 
 public class Controller implements Initializable {
     @FXML
@@ -77,9 +82,14 @@ public class Controller implements Initializable {
 
     private volatile boolean takeShoot;
     private Double angle = .0;
+    private Integer frameW = 640;
+    private Integer frameH = 480;
+    private Integer frameIdx = 0;
+    private String filename; 
     private Pane rootElement;
     private Thread captureThread;
     private FileManager fileManager;
+    private VideoWriter outputVideo;
     private ImageProcessor imageProcessor = new ImageProcessor();
     private volatile boolean isScanning = false;
 
@@ -99,6 +109,7 @@ public class Controller implements Initializable {
                 portNameComboBox.getItems().addAll(SerialPortList.getPortNames());
             }
         );
+        outputVideo = new VideoWriter();
     }
 
 
@@ -168,9 +179,40 @@ public class Controller implements Initializable {
             deltaAngleFld.setDisable(false);
             startScanBtn.setText("Start scan");
             angle = 0.0;
+            if( outputVideo.isOpened() ){
+            	outputVideo.release();
+            	System.out.println("outputVideo.release");
+            }
         } else {
+            Date date = new Date(); 
+            filename = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss.SSS").format(date) ;
+            System.out.println(filename+ " " );
             if (deltaAngleFld.getText().isEmpty()) {
                 return;
+            }
+            File theDir = new File("video/"+filename);
+            if (!theDir.exists()) {
+                try{
+                    theDir.mkdirs();
+                } 
+                catch(SecurityException se){
+                    //handle it
+                }        
+            }
+            frameIdx = 0;
+            try{
+//            	outputVideo.open(filename, outputVideo.fourcc('M','P','4','V'), 20, new Size(frameW, frameH));
+//            	outputVideo.open(filename, outputVideo.fourcc('H','2','6','4'), 30, new Size(frameW, frameH));
+ //         	outputVideo.open(filename, outputVideo.fourcc('A','V','C','1'), 20, new Size(frameW, frameH));
+          	//outputVideo.open(filename+".avi", outputVideo.fourcc('X','V','I','D'), 20, new Size(frameW, frameH), true);
+            	//outputVideo.open(filename, -1, 30, new Size(frameW, frameH));
+            } catch (Exception e) {
+                e.printStackTrace();
+                // log the error
+                System.err.println("ERROR: " + e.getMessage());
+            }
+            if(!outputVideo.isOpened()){
+                System.err.println("ERROR openvideo: " + filename);
             }
             startBtn.setDisable(true);
             deltaAngleFld.setDisable(true);
@@ -250,16 +292,23 @@ public class Controller implements Initializable {
                 // read the current frame
                 frame = fb.getFrame();
                 if (!frame.empty()) {
-                    coords = imageProcessor.findDots(frame);
+                    //coords = imageProcessor.findDots(frame);
                     imageToShow = mat2Image(frame);
                     if (takeShoot && isScanning) {
+                    	if(outputVideo.isOpened()){
+                    		outputVideo.write(frame);
+                    	}
+                    	String jpgname =String.format("video/%s/%08d.jpg", filename,frameIdx++);
+                    	Imgcodecs.imwrite(jpgname, frame);
+                    	/*
                         fullCoords = formulaSolver.getCoordinates(coords, angle);
                         if (fullCoords != null)
                             fileManager.appendToFile(fullCoords);
                         else
                             System.out.println("Null full coordinates");
-                        setTakeShoot(false);
-                        nextScan();
+                            */
+                        //setTakeShoot(false);
+                        //nextScan();
                     }
                 }
             } catch (Exception e) {

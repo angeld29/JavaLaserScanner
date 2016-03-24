@@ -27,7 +27,7 @@ public class FileManager {
             try {
                 Files.createFile(path);
             } catch (FileAlreadyExistsException e) {
-                System.err.println("already exists: " + e.getMessage());
+                //System.err.println("already exists: " + e.getMessage());
                 number++;
                 createFile();
             }
