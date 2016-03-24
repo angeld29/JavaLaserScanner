@@ -1,8 +1,8 @@
 package org.antego.dev;
 
 import org.opencv.core.Mat;
-import org.opencv.highgui.Highgui;
-import org.opencv.highgui.VideoCapture;
+import org.opencv.videoio.Videoio;
+import org.opencv.videoio.VideoCapture;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -26,14 +26,15 @@ public class FrameBuffer implements FrameProducer {
     private Thread assigningThread;
 
     public FrameBuffer(int camId, int frameWidth, int frameHeight) throws CameraNotOpenedException {
-        camera = new VideoCapture(camId);
+//      camera = new VideoCapture(camId);
+        camera = new VideoCapture("C:/angel/eclipse_workspace/test.mp4");
         long start_time = System.currentTimeMillis();
         while (!camera.isOpened()) {
             if (System.currentTimeMillis() - start_time > 1000)
                 throw new CameraNotOpenedException("Can't open camera " + camId + ", check that camera connected and try another id.");
         }
-        camera.set(Highgui.CV_CAP_PROP_FRAME_WIDTH, frameWidth);
-        camera.set(Highgui.CV_CAP_PROP_FRAME_HEIGHT, frameHeight);
+        camera.set(Videoio.CV_CAP_PROP_FRAME_WIDTH, frameWidth);
+        camera.set(Videoio.CV_CAP_PROP_FRAME_HEIGHT, frameHeight);
         FrameBuffer.frameWidth = frameWidth;
         FrameBuffer.frameHeight = frameHeight;
         cloningThread = new Thread(() -> {

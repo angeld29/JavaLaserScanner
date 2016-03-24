@@ -13,7 +13,8 @@ import jssc.SerialPortException;
 import jssc.SerialPortList;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
-import org.opencv.highgui.Highgui;
+import org.opencv.videoio.Videoio;
+import org.opencv.imgcodecs.Imgcodecs;
 
 import java.io.ByteArrayInputStream;
 import java.net.URL;
@@ -189,7 +190,7 @@ public class Controller implements Initializable {
 
     private Image mat2Image(Mat frame) {
         MatOfByte buffer = new MatOfByte();
-        Highgui.imencode(".bmp", frame, buffer);
+        Imgcodecs.imencode(".bmp", frame, buffer);
         return new Image(new ByteArrayInputStream(buffer.toArray()));
     }
 

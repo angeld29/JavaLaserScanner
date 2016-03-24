@@ -5,7 +5,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
-import org.opencv.highgui.Highgui;
+import org.opencv.imgcodecs.Imgcodecs;
 
 import java.io.ByteArrayInputStream;
 import java.util.LinkedList;
@@ -73,7 +73,7 @@ class MatToImageConverter {
                 synchronized (imageQueue) {
                     imageQueue.add(executorService.submit(() -> {
                         MatOfByte buffer = new MatOfByte();
-                        Highgui.imencode(".bmp", frame, buffer);
+                        Imgcodecs.imencode(".bmp", frame, buffer);
                         frame.release();
                         return new Image(new ByteArrayInputStream(buffer.toArray()));
                     }));

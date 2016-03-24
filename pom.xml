@@ -15,15 +15,14 @@
         <dependency>
             <groupId>org.opencv</groupId>
             <artifactId>opencv_jar</artifactId>
-            <version>2.4.12</version>
+            <version>3.1.0</version>
         </dependency>
         <dependency>
             <groupId>org.opencv</groupId>
-            <artifactId>libopencv_native</artifactId>
-            <version>2.4.12</version>
+            <artifactId>opencv_native</artifactId>
+            <version>3.1.0</version>
             <type>dll</type>
             <scope>runtime</scope>
-            <systemPath>C:\angel\eclipse_workspace\libs</systemPath>
         </dependency>
         <dependency>
             <groupId>org.scream3r</groupId>
