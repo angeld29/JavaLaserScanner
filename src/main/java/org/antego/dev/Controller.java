@@ -185,6 +185,7 @@ public class Controller implements Initializable {
             	System.out.println("outputVideo.release");
             }
         } else {
+            angle = 0.0;
             Date date = new Date(); 
             filename = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss.SSS").format(date) ;
             System.out.println(filename+ " " );
@@ -204,9 +205,10 @@ public class Controller implements Initializable {
             frameIdx = 0;
             try{
 //            	outputVideo.open(filename, outputVideo.fourcc('M','P','4','V'), 20, new Size(frameW, frameH));
-//            	outputVideo.open(filename, outputVideo.fourcc('H','2','6','4'), 30, new Size(frameW, frameH));
+            	//outputVideo.open("video/"+filename+".avi", outputVideo.fourcc('H','2','6','4'), 25, new Size(frameW, frameH));
           	//outputVideo.open(filename, outputVideo.fourcc('A','V','C','1'), 20, new Size(frameW, frameH));
-          	outputVideo.open("video/"+filename+".avi", outputVideo.fourcc('X','V','I','D'), 20, new Size(frameW, frameH), true);
+          	outputVideo.open("video/"+filename+".avi", outputVideo.fourcc('X','V','I','D'), 25, new Size(frameW, frameH), true);
+          	//outputVideo.open("video/"+filename+".avi", outputVideo.fourcc('M','S','V','C'), 25, new Size(frameW, frameH), true);
             //outputVideo.open(filename+".avi", -1, 30, new Size(frameW, frameH));
             } catch (Exception e) {
                 e.printStackTrace();
@@ -251,10 +253,13 @@ public class Controller implements Initializable {
 
         public CaptureThread() throws FrameBuffer.CameraNotOpenedException, SerialPortException {
 //            try {
+        		frameW = Integer.parseInt(frameWidthFld.getText());
+        		frameH = Integer.parseInt(frameHeightFld.getText());
+        		
                 frameBuffer = new FrameBuffer(Integer.parseInt(camIdFld.getText()),
                         Integer.parseInt(frameWidthFld.getText()),
                         Integer.parseInt(frameHeightFld.getText()));
-                //serialWriter = new SerialWriter(Controller.this.portNameComboBox.getValue(), Controller.this);
+                serialWriter = new SerialWriter(Controller.this.portNameComboBox.getValue(), Controller.this);
 //            } catch (SerialPortException e) {
 //                frameBuffer.stop();
 //                throw e;
@@ -279,7 +284,7 @@ public class Controller implements Initializable {
                 });
             }
             frameBuffer.stop();
-            //serialWriter.disconnect();
+            serialWriter.disconnect();
         }
 
         private Image grabFrame(FrameBuffer fb) {
@@ -311,8 +316,9 @@ public class Controller implements Initializable {
                         else
                             System.out.println("Null full coordinates");
                             */
-                        //setTakeShoot(false);
-                        //nextScan();
+                        setTakeShoot(false);
+                        //serialWriter.rotate(1);
+                        nextScan();
                     }
                 }
             } catch (Exception e) {
@@ -331,7 +337,11 @@ public class Controller implements Initializable {
                 return;
             }
             serialWriter.rotate(steps);
+            System.out.println(angle.toString());
             angle += (double) steps * 360 / 456;
+            if( angle > 360){
+            	startScan();
+            }
         }
     }
 

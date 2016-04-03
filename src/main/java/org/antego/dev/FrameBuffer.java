@@ -26,8 +26,8 @@ public class FrameBuffer implements FrameProducer {
     private Thread assigningThread;
 
     public FrameBuffer(int camId, int frameWidth, int frameHeight) throws CameraNotOpenedException {
-//      camera = new VideoCapture(camId);
-        camera = new VideoCapture("C:/angel/eclipse_workspace/test.mp4");
+    	camera = new VideoCapture(camId);
+        //camera = new VideoCapture("C:/angel/eclipse_workspace/test.mp4");
         long start_time = System.currentTimeMillis();
         while (!camera.isOpened()) {
             if (System.currentTimeMillis() - start_time > 1000)

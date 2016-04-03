@@ -54,7 +54,7 @@ public class SerialWriter {
                                 Thread.sleep(1000);
                                 Platform.runLater(() -> controller.setTakeShoot(true));
                             }
-                            System.out.println(message.toString());
+                            //System.out.println(message.toString());
                             message.setLength(0);
                         } else {
                             if (b != '\n' && b != '\r') message.append((char) b);

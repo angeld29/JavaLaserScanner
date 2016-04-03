@@ -18,7 +18,7 @@ public class FileManager {
     int number;
 
     FileManager() {
-        createFile();
+        //createFile();
     }
 
     private void createFile() {
